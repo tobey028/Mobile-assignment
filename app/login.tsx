@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch } from 'react-redux';
-import { setCredentials } from '../src/store/authSlice';
 import { authApi } from '../src/services/api';
+import { setCredentials } from '../src/store/authSlice';
 import { storage } from '../src/utils/storage';
 import { loginSchema } from '../src/utils/validation';
-import { Feather } from '@expo/vector-icons';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -56,133 +58,201 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Feather name="activity" size={60} color="#6B7280" />
-        <Text style={styles.title}>GymBuddy</Text>
-        <Text style={styles.subtitle}>Your Fitness Companion</Text>
-      </View>
-
-      <View style={styles.form}>
-        <View style={styles.inputContainer}>
-          <Feather name="user" size={20} color="#757575" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Username"
-            value={username}
-            onChangeText={setUsername}
-            autoCapitalize="none"
-          />
+    <LinearGradient
+      colors={['#667eea', '#764ba2', '#f093fb']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      style={styles.container}
+    >
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <View style={styles.iconContainer}>
+            <BlurView intensity={80} tint="light" style={styles.iconBlur}>
+              <Feather name="activity" size={50} color="#FFFFFF" />
+            </BlurView>
+          </View>
+          <Text style={styles.title}>GymBuddy</Text>
+          <Text style={styles.subtitle}>Your Fitness Companion</Text>
         </View>
-        {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
 
-        <View style={styles.inputContainer}>
-          <Feather name="lock" size={20} color="#757575" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Feather name={showPassword ? "eye-off" : "eye"} size={20} color="#757575" />
-          </TouchableOpacity>
-        </View>
-        {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+        <BlurView intensity={40} tint="light" style={styles.formBlur}>
+          <View style={styles.form}>
+            <BlurView intensity={60} tint="light" style={styles.inputBlur}>
+              <View style={styles.inputContainer}>
+                <Feather name="user" size={20} color="#FFFFFF" style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Username"
+                  placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                  value={username}
+                  onChangeText={setUsername}
+                  autoCapitalize="none"
+                />
+              </View>
+            </BlurView>
+            {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
 
-        <TouchableOpacity 
-          style={[styles.button, loading && styles.buttonDisabled]} 
-          onPress={handleLogin}
-          disabled={loading}
-        >
-          <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
-        </TouchableOpacity>
+            <BlurView intensity={60} tint="light" style={styles.inputBlur}>
+              <View style={styles.inputContainer}>
+                <Feather name="lock" size={20} color="#FFFFFF" style={styles.icon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  placeholderTextColor="rgba(255, 255, 255, 0.7)"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                  <Feather name={showPassword ? "eye-off" : "eye"} size={20} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
+            </BlurView>
+            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
-        <TouchableOpacity onPress={() => router.push('/register')}>
-          <Text style={styles.linkText}>Don't have an account? Register</Text>
-        </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.button, loading && styles.buttonDisabled]} 
+              onPress={handleLogin}
+              disabled={loading}
+            >
+              <BlurView intensity={80} tint="light" style={styles.buttonBlur}>
+                <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
+              </BlurView>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => router.push('/register')}>
+              <Text style={styles.linkText}>Don't have an account? Register</Text>
+            </TouchableOpacity>
+          </View>
+        </BlurView>
       </View>
-    </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB',
+  },
+  content: {
+    flex: 1,
     justifyContent: 'center',
     padding: 20,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 50,
+  },
+  iconContainer: {
+    marginBottom: 20,
+  },
+  iconBlur: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: '#FFFFFF',
     marginTop: 10,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#6B7280',
-    marginTop: 5,
+    fontSize: 18,
+    color: '#FFFFFF',
+    marginTop: 8,
+    opacity: 0.9,
+    textShadowColor: 'rgba(0, 0, 0, 0.1)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
+  },
+  formBlur: {
+    borderRadius: 24,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.3,
+        shadowRadius: 20,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
   },
   form: {
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    padding: 24,
+  },
+  inputBlur: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 8,
-    backgroundColor: '#F9FAFB',
+    paddingHorizontal: 16,
+    height: 56,
   },
   icon: {
-    marginRight: 10,
+    marginRight: 12,
   },
   input: {
     flex: 1,
-    height: 50,
     fontSize: 16,
-    color: '#1F2937',
+    color: '#FFFFFF',
+    fontWeight: '500',
   },
   errorText: {
-    color: '#EF4444',
+    color: '#FFE5E5',
     fontSize: 12,
     marginBottom: 8,
     marginLeft: 4,
+    fontWeight: '600',
+    textShadowColor: 'rgba(255, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   button: {
-    backgroundColor: '#6B7280',
-    padding: 15,
-    borderRadius: 8,
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  buttonBlur: {
+    paddingVertical: 16,
     alignItems: 'center',
-    marginTop: 10,
+    justifyContent: 'center',
   },
   buttonDisabled: {
-    backgroundColor: '#9CA3AF',
+    opacity: 0.6,
   },
   buttonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   linkText: {
-    color: '#6B7280',
+    color: '#FFFFFF',
     textAlign: 'center',
-    marginTop: 15,
-    fontSize: 14,
+    marginTop: 20,
+    fontSize: 15,
+    fontWeight: '500',
+    opacity: 0.9,
   },
 });
